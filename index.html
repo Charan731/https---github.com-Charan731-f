@@ -4,44 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pay 1 Rupee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: pink;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .box {
+            background: lightyellow;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        #balance-display {
+            font-size: 25px;
+            font-weight: bold;
+            color: green;
+        }
+        button {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: darkgreen;
+        }
+        footer {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pay 1 Rupee to See How Many Rupees in This Account</h1>
+        <div class="box">
+            <p id="balance-display">₹ --</p>
+            <form>
+                <script src="https://checkout.razorpay.com/v1/payment-button.js"
+                    data-payment_button_id="pl_Q1VPKynGzRQl5H" async>
+                </script>
+            </form>
+            <button onclick="updateBalance()">Refresh Balance</button>
+        </div>
+        <footer>
+            <p>Founded by Chelluboina Charan.</p>
+        </footer>
+    </div>
     <script>
-        async function fetchBalance() {
+        async function updateBalance() {
             try {
-                const response = await fetch('http://localhost:5000/balance'); // Fetch from backend
-                const data = await response.json();
-                document.getElementById('balance').innerText = `Balance: ${data.balance}`;
+                let response = await fetch("https://charan-fgp9.onrender.com/balance");
+                let data = await response.json();
+                if (data.balance !== undefined) {
+                    document.getElementById("balance-display").innerText = `₹${data.balance}`;
+                } else {
+                    console.error("Error: Balance is undefined");
+                }
             } catch (error) {
                 console.error("Error fetching balance:", error);
             }
         }
-
-        function listenToPaymentSuccess() {
-            const razorpayBtn = document.querySelector('script[data-payment_button_id]');
-            if (razorpayBtn) {
-                razorpayBtn.addEventListener('load', () => {
-                    console.log("Razorpay button loaded");
-                });
-
-                window.addEventListener('message', (event) => {
-                    if (event.data && event.data.razorpay_payment_id) {
-                        console.log("Payment Successful:", event.data.razorpay_payment_id);
-                        setTimeout(fetchBalance, 5000); // Fetch updated balance after 5 seconds
-                    }
-                });
-            }
-        }
-
-        window.onload = function () {
-            fetchBalance();
-            listenToPaymentSuccess();
-        };
+        updateBalance();
     </script>
-</head>
-<body>
-    <h1>Pay 1 Rupee to See How Many Rupees</h1>
-    <form>
-        <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_Q1VPKynGzRQl5H" async></script>
-    </form>
-    <h2 id="balance">Balance: 0</h2>
 </body>
 </html>
