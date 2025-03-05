@@ -80,6 +80,7 @@
     <script>
         async function updateBalance() {
             try {
+<<<<<<< HEAD
                 let response = await fetch("https://charan-fgp9.onrender.com/balance");
                 let data = await response.json();
                 if (data.balance !== undefined) {
@@ -87,6 +88,11 @@
                 } else {
                     console.error("Error: Balance is undefined");
                 }
+=======
+                const response = await fetch('https://charan-fgp9.onrender.com/balance'); // Fetch from backend
+                const data = await response.json();
+                document.getElementById('balance').innerText = `Balance: ${data.balance}`;
+>>>>>>> 1e5470c15cba3b0e5944f512d380e69d972e710a
             } catch (error) {
                 console.error("Error fetching balance:", error);
             }
